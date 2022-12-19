@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, process};
 use mini_grep::Params;
 
 
@@ -6,7 +6,11 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     println!("{:?}",args);
 
-    let params = Params::new(&args);
+    let params = Params::new(&args).unwrap_or_else(|err|{
+        eprintln!("ERROR: {err}");
+        process::exit(0)
+    });
+    println!("here 1");
 
     mini_grep::run(&params);
     println!("file {}", params.filename);
@@ -21,7 +25,7 @@ fn params_not_found() {
     println!("{:?}",args);
     let params_test = Params::new(&args);
 
-    mini_grep::run(&params_test);
+    mini_grep::run(&params_test.unwrap());
 }
 
 #[test]
